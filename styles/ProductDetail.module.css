@@ -1,0 +1,9 @@
+.link {
+  text-decoration: none;
+}
+.link:hover {
+  text-decoration: underline;
+}
+.backToResults {
+  margin-bottom: 0.8rem;
+}
