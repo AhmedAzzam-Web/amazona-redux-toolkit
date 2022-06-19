@@ -45,31 +45,11 @@ const CartFilled = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell
-                  sx={{ backgroundColor: "inherit", color: "inherit" }}
-                >
-                  Image
-                </TableCell>
-                <TableCell
-                  sx={{ backgroundColor: "inherit", color: "inherit" }}
-                >
-                  Name
-                </TableCell>
-                <TableCell
-                  sx={{ backgroundColor: "inherit", color: "inherit" }}
-                >
-                  Quantity
-                </TableCell>
-                <TableCell
-                  sx={{ backgroundColor: "inherit", color: "inherit" }}
-                >
-                  Price
-                </TableCell>
-                <TableCell
-                  sx={{ backgroundColor: "inherit", color: "inherit" }}
-                >
-                  Action
-                </TableCell>
+                <TableCell>Image</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Quantity</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
 
@@ -103,25 +83,22 @@ const CartFilled = () => {
                   </TableCell>
 
                   <TableCell>
-                    <NextLink href={`/products/${product.slug}`} passHref>
-                      <Select
-                        value={product.quantity}
-                        onChange={(e) =>
-                          dispatch(updateCart(product, e.target.value))
-                        }
-                      >
-                        {[...Array(product.countInStock).keys()].map((num) => (
-                          <MenuItem key={num + 1} value={num + 1}>
-                            {num + 1}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </NextLink>
+                    <Select
+                      value={product.quantity}
+                      sx={{color: 'inherit', backgroundColor: 'inherit'}}
+                      onChange={(e) =>
+                        dispatch(updateCart(product, e.target.value))
+                      }
+                    >
+                      {[...Array(product.countInStock).keys()].map((num) => (
+                        <MenuItem key={num + 1} value={num + 1}>
+                          {num + 1}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </TableCell>
 
-                  <TableCell
-                    sx={{ backgroundColor: "inherit", color: "inherit" }}
-                  >
+                  <TableCell>
                     <Typography variant="body1" component="h3">
                       ${product.price}
                     </Typography>
@@ -144,7 +121,7 @@ const CartFilled = () => {
       </Grid>
 
       <Grid item xs={12} lg={3}>
-        <Card sx={{ backgroundColor: "inherit", color: "inherit" }}>
+        <Card sx={{ color: "inherit", backgroundColor: "inherit" }}>
           <List>
             <ListItem>
               <Typography variant="h2" component="div">

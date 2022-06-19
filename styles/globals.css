@@ -16,6 +16,10 @@ body {
   box-sizing: border-box;
 }
 
+th, td, svg {
+  color: inherit !important;
+}
+
 .main {
   margin-top: 1.3rem;
   min-height: 80vh;
