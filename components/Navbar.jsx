@@ -16,8 +16,10 @@ import {
   IconButton,
   Toolbar,
   Box,
+  Badge,
 } from "@mui/material";
 import { useTheme } from "next-themes";
+import { useSelector } from "react-redux";
 
 const Search = styled("div")(({ theme }) => ({
   display: "flex",
@@ -63,7 +65,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     display: "flex",
     flexGrow: 1,
     [theme.breakpoints.up("sm")]: {
-      width: "26ch",
+      width: "20ch",
     },
     [theme.breakpoints.up("md")]: {
       width: "35ch",
@@ -137,35 +139,15 @@ export default function Navbar() {
     handleMobileMenuClose();
   };
 
-  const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Cart</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
-
   const { resolvedTheme, setTheme } = useTheme();
-  
+
   const [isDark, setIsDark] = useState();
   useEffect(() => {
     resolvedTheme === "light" ? setIsDark(false) : setIsDark(true);
     return () => {};
   }, [resolvedTheme]);
+
+  const { cart } = useSelector((store) => store.cart);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -196,7 +178,7 @@ export default function Navbar() {
             </NextLink>
           </Box>
 
-          <Search>
+          <Search sx={{ display: { xs: "none", sm: "flex" } }}>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -206,7 +188,7 @@ export default function Navbar() {
             />
           </Search>
 
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+          <Box alignItems="center" justifyContent="center">
             <SunOrMoon
               key={isDark}
               checked={isDark}
@@ -214,23 +196,18 @@ export default function Navbar() {
                 setTheme(resolvedTheme === "light" ? "dark" : "light")
               }
             />
-          </Box>
-
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
+            <NextLink href="/cart" passHref>
+              <Link className="link" sx={{ paddingRight: "5px", paddingLeft: '5px' }}>
+                <Typography variant="body1" component="span">
+                  <Badge color="secondary" badgeContent={cart.cartItems.length}>
+                    Cart
+                  </Badge>
+                </Typography>
+              </Link>
+            </NextLink>
           </Box>
         </Toolbar>
       </AppBar>
-      {renderMenu}
     </Box>
   );
 }
