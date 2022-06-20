@@ -20,11 +20,14 @@ import NextLink from "next/link";
 import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  updateCart,
+  addAndUpdateItem,
   removeItem,
 } from "../utils/features/cartSlice/cartController";
+import { useSnackbar } from "notistack";
+import axios from "axios";
 
 const CartFilled = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
 
   const {
@@ -38,8 +41,34 @@ const CartFilled = () => {
     return () => {};
   }, [cartItems]);
 
+  const updateCart = async (item, quantity) => {
+    const { data } = await axios.get(`/api/products/${item._id}`);
+
+    if (data.countInStock < quantity) {
+      enqueueSnackbar("Sorry, Product is out of the stock", {
+        variant: "error",
+      });
+      return;
+    } else {
+      dispatch(
+        addAndUpdateItem({
+          _id: item._id,
+          name: item.name,
+          countInStock: item.countInStock,
+          slug: item.slug,
+          price: item.price,
+          image: item.image,
+          quantity,
+        })
+      );
+      enqueueSnackbar(`${item.name} updated in the cart`, {
+        variant: "success",
+      });
+    }
+  };
+
   return (
-    <Grid container>
+    <Grid container spacing={1}>
       <Grid item xs={12} lg={9}>
         <TableContainer>
           <Table>
@@ -55,7 +84,7 @@ const CartFilled = () => {
 
             <TableBody>
               {hydratedCartItems.map((product) => (
-                <TableRow key={product._key}>
+                <TableRow key={product._id}>
                   <TableCell>
                     <NextLink href={`/products/${product.slug}`} passHref>
                       <Link>
@@ -85,10 +114,8 @@ const CartFilled = () => {
                   <TableCell>
                     <Select
                       value={product.quantity}
-                      sx={{color: 'inherit', backgroundColor: 'inherit'}}
-                      onChange={(e) =>
-                        dispatch(updateCart(product, e.target.value))
-                      }
+                      sx={{ color: "inherit", backgroundColor: "inherit" }}
+                      onChange={(e) => updateCart(product, e.target.value)}
                     >
                       {[...Array(product.countInStock).keys()].map((num) => (
                         <MenuItem key={num + 1} value={num + 1}>
@@ -125,7 +152,9 @@ const CartFilled = () => {
           <List>
             <ListItem>
               <Typography variant="h2" component="div">
-                Subtotal ({hydratedCartItems.length}) items : ${" "}
+                Subtotal (
+                {hydratedCartItems.reduce((a, c) => a + c.quantity, 0)}) items :
+                $
                 {hydratedCartItems.reduce(
                   (a, c) => a + c.quantity * c.price,
                   0

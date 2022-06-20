@@ -2,6 +2,7 @@ import { Typography } from '@mui/material';
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { CartEmpty, CartFilled, Layout } from '../components/imports';
+import dynamic from 'next/dynamic';
 
 const Cart = () => {
   const { cart: { cartItems } } = useSelector(store => store.cart);
@@ -26,4 +27,4 @@ const Cart = () => {
   )
 }
 
-export default Cart
+export default dynamic(() => Promise.resolve(Cart), { ssr: false })

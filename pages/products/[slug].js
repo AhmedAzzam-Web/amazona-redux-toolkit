@@ -8,9 +8,11 @@ import styles from '../../styles/ProductDetail.module.css'
 import { useSnackbar } from 'notistack'
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItemToCart } from '../../utils/features/cartSlice/cartController';
+import { addAndUpdateItem } from '../../utils/features/cartSlice/cartController';
+import { useRouter } from 'next/router'
 
 const ProductDetails = ({ product }) => {
+  const router = useRouter();
   const { name, description, price, image, rating, reviews, category, brand } = product;
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
@@ -25,8 +27,8 @@ const ProductDetails = ({ product }) => {
       enqueueSnackbar('Sorry, Product is out of the stock', { variant: 'error' });
       return;
     } else {
-      dispatch(addItemToCart({
-        _key: product._id,
+      dispatch(addAndUpdateItem({
+        _id: product._id,
         name: product.name,
         countInStock: product.countInStock,
         slug: product.slug.current,
@@ -36,6 +38,7 @@ const ProductDetails = ({ product }) => {
       }))
       enqueueSnackbar(`${product.name} added to cart`, { variant: 'success' });
     }
+    router.push('/cart')
   }
 
   return (
