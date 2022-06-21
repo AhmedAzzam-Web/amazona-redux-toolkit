@@ -62,7 +62,6 @@ const ProductItem = ({ product }) => {
             title={name}
             alt={name}
           />
-
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
               {name}

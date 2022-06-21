@@ -1,4 +1,4 @@
-import { createTheme, css  } from "@mui/material/styles";
+import { createTheme, css } from "@mui/material/styles";
 
 export const coreTheme = {
   typography: {
@@ -26,6 +26,16 @@ export const coreTheme = {
 export const ligthTheme = createTheme({
   ...coreTheme,
   palette: {
+    text: {
+      primary: "rgba(0, 0, 0, 0.87)",
+      secondary: 'rgba(0, 0, 0, 0.6)',
+      disabled: 'rgba(0, 0, 0, 0.38)',
+    },
+    background: {
+      default: '#fff',
+      paper: '#fff',
+      card: '#fff',
+    },
     ...coreTheme.palette,
     mode: 'light',
   }
