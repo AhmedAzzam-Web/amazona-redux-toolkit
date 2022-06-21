@@ -121,33 +121,18 @@ const SunOrMoon = styled(Switch)(({ theme }) => ({
 }));
 
 export default function Navbar() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
-  const isMenuOpen = Boolean(anchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
-
+  const { cart } = useSelector((store) => store.cart);
   const { resolvedTheme, setTheme } = useTheme();
 
   const [isDark, setIsDark] = useState();
+  const [cartItemsLength, setCartItemsLength] = useState();
+  
   useEffect(() => {
     resolvedTheme === "light" ? setIsDark(false) : setIsDark(true);
+    setCartItemsLength(cart.cartItems.length)
     return () => {};
-  }, [resolvedTheme]);
+  }, [resolvedTheme, cart.cartItems.length]);
 
-  const { cart } = useSelector((store) => store.cart);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -199,7 +184,7 @@ export default function Navbar() {
             <NextLink href="/cart" passHref>
               <Link className="link" sx={{ paddingRight: "5px", paddingLeft: '5px' }}>
                 <Typography variant="body1" component="span">
-                  <Badge color="secondary" badgeContent={cart.cartItems.length}>
+                  <Badge color="secondary" badgeContent={cartItemsLength}>
                     Cart
                   </Badge>
                 </Typography>
