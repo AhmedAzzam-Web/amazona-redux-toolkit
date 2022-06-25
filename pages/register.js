@@ -6,6 +6,11 @@ import { Layout } from '../components/imports'
 import NextLink from 'next/link'
 
 const validationSchema = yup.object({
+  firstName: yup
+    .string()
+    .matches(/^[A-Za-z ]*$/, 'Please enter valid name')
+    .max(40)
+    .required(),
   email: yup
     .string('Enter your email')
     .email('Enter a valid email')
@@ -14,13 +19,19 @@ const validationSchema = yup.object({
     .string('Enter your password')
     .min(8, 'Password should be of minimum 8 characters length')
     .required('Password is required'),
+  confirmPassword: yup
+    .string()
+    .required('Password is required')
+    .oneOf([yup.ref('password'), null], 'Your password do not match')
 });
 
 const Login = () => {
   const formik = useFormik({
     initialValues: {
+      firstName: '',
       email: '',
       password: '',
+      confirmPassword: '',
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -29,7 +40,7 @@ const Login = () => {
   });
 
   return (
-    <Layout title='login' description='Login to get fun'>
+    <Layout title='register' description='register to get fun'>
       <Box sx={{ margin: { xs: 'none', lg: '0 10%' } }}>
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
@@ -37,6 +48,19 @@ const Login = () => {
               <Typography variant="h1" component="div" gutterBottom>
                 Login
               </Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                id="firstName"
+                name="firstName"
+                label="First Name"
+                value={formik.values.firstName}
+                onChange={formik.handleChange}
+                error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                helperText={formik.touched.firstName && formik.errors.firstName}
+              />
             </Grid>
 
             <Grid item xs={12}>
@@ -67,16 +91,30 @@ const Login = () => {
             </Grid>
 
             <Grid xs={12} item>
+              <TextField
+                fullWidth
+                id="confirmPassword"
+                name="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                value={formik.values.confirmPassword}
+                onChange={formik.handleChange}
+                error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
+                helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
+              />
+            </Grid>
+
+            <Grid xs={12} item>
               <Button color="primary" variant="contained" fullWidth type="submit">
-                Submit
+                Register
               </Button>
             </Grid>
 
             <Grid xs={12} item>
               <Typography variant="subtitle1" gutterBottom component="h3">
-                Do not have an account?
-                <NextLink href='/register' passHref>
-                  <Link className='linkWithColor' sx={{ padding: '0 6px' }}>Register</Link>
+                Already have an account?
+                <NextLink href='/login' passHref>
+                  <Link className='linkWithColor' sx={{ padding: '0 6px' }}>Login</Link>
                 </NextLink>
               </Typography>
             </Grid>
