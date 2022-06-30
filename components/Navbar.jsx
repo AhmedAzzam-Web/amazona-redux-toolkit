@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { useTheme } from "next-themes";
 import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
 
 const Search = styled("div")(({ theme }) => ({
   display: "flex",
@@ -121,18 +122,29 @@ const SunOrMoon = styled(Switch)(({ theme }) => ({
 }));
 
 export default function Navbar() {
-  const { cart } = useSelector((store) => store.cart);
+  const {
+    cart: { cart },
+    user: { userInfo },
+  } = useSelector((store) => store);
+
   const { resolvedTheme, setTheme } = useTheme();
 
-  const [isDark, setIsDark] = useState();
-  const [cartItemsLength, setCartItemsLength] = useState();
-  
+  const [isDark, setIsDark] = useState(true);
+  const [cartItemsLength, setCartItemsLength] = useState(0);
+
   useEffect(() => {
     resolvedTheme === "light" ? setIsDark(false) : setIsDark(true);
-    setCartItemsLength(cart.cartItems.length)
+    setCartItemsLength(cart.cartItems.length);
     return () => {};
   }, [resolvedTheme, cart.cartItems.length]);
 
+  const [userName, setUserName] = useState(false);
+  let userInCookie = Cookies.get("userInfo") ? JSON.parse(Cookies.get('userInfo')) : null;
+
+  useEffect(() => {
+    userInCookie ? setUserName(true) : setUserName(false);
+    return () => {};
+  }, [userInCookie]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -182,7 +194,7 @@ export default function Navbar() {
               }
             />
             <NextLink href="/cart" passHref>
-              <Link className="link" sx={{ paddingRight: "5px", paddingLeft: '5px' }}>
+              <Link className="link" sx={{ padding: "0 10px" }}>
                 <Typography variant="body1" component="span">
                   <Badge color="secondary" badgeContent={cartItemsLength}>
                     Cart
@@ -190,6 +202,24 @@ export default function Navbar() {
                 </Typography>
               </Link>
             </NextLink>
+
+            {userName ? (
+              <NextLink href="/profile" passHref>
+                <Link className="link" sx={{ padding: "0 10px" }}>
+                  <Typography variant="body1" component="span">
+                    {userInCookie.name}
+                  </Typography>
+                </Link>
+              </NextLink>
+            ) : (
+              <NextLink href="/login" passHref>
+                <Link className="link" sx={{ padding: "0 10px" }}>
+                  <Typography variant="body1" component="span">
+                    Login
+                  </Typography>
+                </Link>
+              </NextLink>
+            )}
           </Box>
         </Toolbar>
       </AppBar>

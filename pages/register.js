@@ -1,12 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
 import { Layout } from '../components/imports'
 import NextLink from 'next/link'
+import { useSnackbar } from 'notistack';
+import axios from 'axios'
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
+import { useSelector, useDispatch } from 'react-redux';
+import { addUser } from '../utils/features/userSlice/userController';
 
 const validationSchema = yup.object({
-  firstName: yup
+  name: yup
     .string()
     .matches(/^[A-Za-z ]*$/, 'Please enter valid name')
     .max(40)
@@ -25,17 +31,40 @@ const validationSchema = yup.object({
     .oneOf([yup.ref('password'), null], 'Your password do not match')
 });
 
-const Login = () => {
+const Register = () => {
+  const { userInfo } = useSelector(store => store.user)
+  const { enqueueSnackbar } = useSnackbar()
+  const router = useRouter()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (userInfo) {
+      router.push('/')
+    }
+    return () => { }
+  }, [router, userInfo]);
+
   const formik = useFormik({
     initialValues: {
-      firstName: '',
+      name: '',
       email: '',
       password: '',
       confirmPassword: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async ({ name, email, password, confirmPassword }) => {
+      if (password !== confirmPassword) {
+        enqueueSnackbar('Passwords do not match', { variant: 'error' })
+        return;
+      }
+      try {
+        const { data } = await axios.post('/api/users/register', { name, email, password });
+        dispatch(() => addUser(data))
+        Cookies.set('userInfo', JSON.stringify(data));
+        router.push('/')
+      } catch (err) {
+        enqueueSnackbar(err.message, { variant: 'error' })
+      }
     },
   });
 
@@ -46,20 +75,20 @@ const Login = () => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="h1" component="div" gutterBottom>
-                Login
+                Register
               </Typography>
             </Grid>
 
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                id="firstName"
-                name="firstName"
-                label="First Name"
-                value={formik.values.firstName}
+                id="name"
+                name="name"
+                label="Name"
+                value={formik.values.name}
                 onChange={formik.handleChange}
-                error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-                helperText={formik.touched.firstName && formik.errors.firstName}
+                error={formik.touched.name && Boolean(formik.errors.name)}
+                helperText={formik.touched.name && formik.errors.name}
               />
             </Grid>
 
@@ -125,4 +154,4 @@ const Login = () => {
   );
 }
 
-export default Login
+export default Register
