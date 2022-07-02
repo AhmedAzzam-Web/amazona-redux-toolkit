@@ -1,9 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  cart: {
-    cartItems: []
-  }
+  cartItems: []
 }
 
 export const cartSlice = createSlice({
@@ -12,12 +10,12 @@ export const cartSlice = createSlice({
   reducers: {
     addAndUpdateItem: (state, { payload }) => {
       let newItem = payload;
-      const existItem = state.cart.cartItems.find((item) => item._id === payload._id);
+      const existItem = state.cartItems && state.cartItems.find((item) => item._id === payload._id);
 
-      state.cart.cartItems = existItem ? state.cart.cartItems.map((item) => item._id === existItem._id ? newItem : item) : [...state.cart.cartItems, newItem]
+      state.cartItems = existItem ? state.cartItems.map((item) => item._id === existItem._id ? newItem : item) : [...state.cartItems, newItem]
     },
     removeItem: (state, { payload }) => {
-      state.cart.cartItems = state.cart.cartItems.filter(item => item._id !== payload._id)
+      state.cartItems = state.cartItems.filter(item => item._id !== payload._id)
     },
   },
 })

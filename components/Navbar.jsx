@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import MoreIcon from "@mui/icons-material/MoreVert";
 import styles from "../styles/Navbar.module.css";
 import NextLink from "next/link";
 import {
@@ -17,10 +16,12 @@ import {
   Toolbar,
   Box,
   Badge,
+  Button,
 } from "@mui/material";
 import { useTheme } from "next-themes";
-import { useSelector } from "react-redux";
-import Cookies from "js-cookie";
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/router";
+import { removeUser } from "../utils/features/userSlice/userController";
 
 const Search = styled("div")(({ theme }) => ({
   display: "flex",
@@ -121,11 +122,14 @@ const SunOrMoon = styled(Switch)(({ theme }) => ({
   },
 }));
 
+const userPages = ["Profile", "Order History"];
+
 export default function Navbar() {
-  const {
-    cart: { cart },
-    user: { userInfo },
-  } = useSelector((store) => store);
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const { cartItems } = useSelector((store) => store.cart);
+  const { userData } = useSelector((store) => store.user);
 
   const { resolvedTheme, setTheme } = useTheme();
 
@@ -138,16 +142,36 @@ export default function Navbar() {
   }, [resolvedTheme]);
 
   useEffect(() => {
-    setCartItemsLength(cart.cartItems.length);
+    cartItems && setCartItemsLength(cartItems.length);
     return () => {};
-  }, [cart]);
+  }, [cartItems]);
 
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    userInfo ? setUserName(userInfo.name) : setUserName("");
+    userData ? setUserName(userData.name) : setUserName("");
     return () => {};
-  }, [userInfo]);
+  }, [userData]);
+
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  const handleCloseUserMenu = (redirect) => {
+    setAnchorElUser(null);
+    if (redirect) {
+      router.push(redirect);
+    } else {
+      setAnchorElUser(null);
+    }
+  };
+
+  const logoutHandler = () => {
+    setAnchorElUser(null);
+    dispatch(removeUser());
+    router.push("/");
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -178,7 +202,7 @@ export default function Navbar() {
             </NextLink>
           </Box>
 
-          <Search sx={{ display: { xs: "none", sm: "flex" } }}>
+          <Search sx={{ display: { xs: "none", md: "flex" } }}>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -207,19 +231,57 @@ export default function Navbar() {
             </NextLink>
 
             {userName ? (
-              <NextLink href="/profile" passHref>
-                <Link className="link" sx={{ padding: "0 10px" }}>
-                  <Typography variant="body1" component="span">
-                    {userName}
-                  </Typography>
-                </Link>
-              </NextLink>
+              <>
+                <Button
+                  aria-controls="user-menu"
+                  aria-haspopup="true"
+                  className={styles.navbarButton}
+                  onClick={handleOpenUserMenu}
+                >
+                  {userName}
+                </Button>
+                <Menu
+                  id="user-menu"
+                  anchorEl={anchorElUser}
+                  keepMounted
+                  open={Boolean(anchorElUser)}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
+                  onClose={handleCloseUserMenu}
+                >
+                  {userPages.map((page) => (
+                    <MenuItem
+                      key={page}
+                      onClick={() =>
+                        handleCloseUserMenu(
+                          `/${page
+                            .toLowerCase()
+                            .split("")
+                            .join("")
+                            .replace(" ", "-")}`
+                        )
+                      }
+                    >
+                      <Typography textAlign="center">{page}</Typography>
+                    </MenuItem>
+                  ))}
+                  <MenuItem onClick={logoutHandler}>
+                    <Typography textAlign="center">Logout</Typography>
+                  </MenuItem>
+                </Menu>
+              </>
             ) : (
               <NextLink href="/login" passHref>
                 <Link className="link" sx={{ padding: "0 10px" }}>
-                  <Typography variant="body1" component="span">
+                  <Button variant="text" className={styles.userName}>
                     Login
-                  </Typography>
+                  </Button>
                 </Link>
               </NextLink>
             )}

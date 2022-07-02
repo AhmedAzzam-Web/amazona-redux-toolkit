@@ -5,7 +5,7 @@ import { CartEmpty, CartFilled, Layout } from '../components/imports';
 import dynamic from 'next/dynamic';
 
 const Cart = () => {
-  const { cart: { cartItems } } = useSelector(store => store.cart);
+  const { cartItems } = useSelector(store => store.cart);
   const [hydratedCartItems, setHydratedCartItems] = useState([]);
 
   useEffect(() => {

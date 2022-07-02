@@ -1,9 +1,9 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import cartReducer from './features/cartSlice/cartController'
 import userReudcer from './features/userSlice/userController'
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
-import { persistReducer } from 'redux-persist'
-import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
+import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'reduxjs-toolkit-persist';
+import autoMergeLevel2 from 'reduxjs-toolkit-persist/lib/stateReconciler/autoMergeLevel2';
 
 const createNoopStorage = () => {
   return {
@@ -28,15 +28,27 @@ const persistConfig = {
   stateReconciler: autoMergeLevel2,
 }
 
-const persistCart = persistReducer(persistConfig, cartReducer)
-const persistUser = persistReducer(persistConfig, userReudcer)
+const reducers = combineReducers({
+  cart: cartReducer,
+  user: userReudcer,
+});
+
+const _persistedReducer = persistReducer(persistConfig, reducers);
 
 export const store = configureStore({
-  reducer: {
-    cart: persistCart,
-    user: persistUser,
-  },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-    serializableCheck: false
+  reducer: _persistedReducer,
+  middleware: getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActions: [
+        FLUSH,
+        REHYDRATE,
+        PAUSE,
+        PERSIST,
+        PURGE,
+        REGISTER
+      ],
+    },
   }),
 })
+
+export const persistor = persistStore(store)

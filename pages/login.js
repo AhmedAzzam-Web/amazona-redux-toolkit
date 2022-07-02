@@ -1,9 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
 import { Layout } from '../components/imports'
 import NextLink from 'next/link'
+import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
+import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux';
+import { getError } from '../utils/error';
+import { addUser } from '../utils/features/userSlice/userController'
 
 const validationSchema = yup.object({
   email: yup
@@ -17,14 +23,32 @@ const validationSchema = yup.object({
 });
 
 const Login = () => {
+  const { enqueueSnackbar } = useSnackbar()
+  const router = useRouter()
+  const { userData } = useSelector(store => store.user)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (userData) {
+      router.push('/')
+    }
+    return () => { }
+  }, [router, userData]);
+
   const formik = useFormik({
     initialValues: {
       email: '',
       password: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async ({ email, password }) => {
+      try {
+        const { data } = await axios.post('/api/users/login', { email, password });
+        dispatch(addUser(data))
+        router.push('/')
+      } catch (err) {
+        enqueueSnackbar(getError(err), { variant: 'error' })
+      }
     },
   });
 
@@ -68,7 +92,7 @@ const Login = () => {
 
             <Grid xs={12} item>
               <Button color="primary" variant="contained" fullWidth type="submit">
-                Submit
+                Login
               </Button>
             </Grid>
 

@@ -30,9 +30,7 @@ const CartFilled = () => {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
 
-  const {
-    cart: { cartItems },
-  } = useSelector((store) => store.cart);
+  const { cartItems } = useSelector((store) => store.cart);
 
   const [hydratedCartItems, setHydratedCartItems] = useState([]);
 

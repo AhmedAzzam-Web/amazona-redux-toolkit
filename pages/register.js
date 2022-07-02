@@ -9,6 +9,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
 import { addUser } from '../utils/features/userSlice/userController';
+import { getError } from '../utils/error';
 
 const validationSchema = yup.object({
   name: yup
@@ -31,17 +32,17 @@ const validationSchema = yup.object({
 });
 
 const Register = () => {
-  const { userInfo } = useSelector(store => store.user)
+  const { userData } = useSelector(store => store.user)
   const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (userInfo) {
+    if (userData) {
       router.push('/')
     }
     return () => { }
-  }, [router, userInfo]);
+  }, [router, userData]);
 
   const formik = useFormik({
     initialValues: {
@@ -58,10 +59,10 @@ const Register = () => {
       }
       try {
         const { data } = await axios.post('/api/users/register', { name, email, password });
-        dispatch(() => addUser(data))
+        dispatch(addUser(data))
         router.push('/')
       } catch (err) {
-        enqueueSnackbar(err.message, { variant: 'error' })
+        enqueueSnackbar(getError(err), { variant: 'error' })
       }
     },
   });

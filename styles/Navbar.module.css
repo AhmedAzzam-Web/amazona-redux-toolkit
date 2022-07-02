@@ -17,3 +17,7 @@
 .menu {
   padding: 0 !important;
 }
+.navbarButton {
+  text-transform: capitalize;
+  color: #fff;
+}
