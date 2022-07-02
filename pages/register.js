@@ -6,7 +6,6 @@ import { Layout } from '../components/imports'
 import NextLink from 'next/link'
 import { useSnackbar } from 'notistack';
 import axios from 'axios'
-import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
 import { addUser } from '../utils/features/userSlice/userController';
@@ -60,7 +59,6 @@ const Register = () => {
       try {
         const { data } = await axios.post('/api/users/register', { name, email, password });
         dispatch(() => addUser(data))
-        Cookies.set('userInfo', JSON.stringify(data));
         router.push('/')
       } catch (err) {
         enqueueSnackbar(err.message, { variant: 'error' })

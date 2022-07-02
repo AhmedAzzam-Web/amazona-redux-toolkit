@@ -130,21 +130,24 @@ export default function Navbar() {
   const { resolvedTheme, setTheme } = useTheme();
 
   const [isDark, setIsDark] = useState(true);
-  const [cartItemsLength, setCartItemsLength] = useState(0);
+  const [cartItemsLength, setCartItemsLength] = useState();
 
   useEffect(() => {
     resolvedTheme === "light" ? setIsDark(false) : setIsDark(true);
-    setCartItemsLength(cart.cartItems.length);
     return () => {};
-  }, [resolvedTheme, cart.cartItems.length]);
-
-  const [userName, setUserName] = useState(false);
-  let userInCookie = Cookies.get("userInfo") ? JSON.parse(Cookies.get('userInfo')) : null;
+  }, [resolvedTheme]);
 
   useEffect(() => {
-    userInCookie ? setUserName(true) : setUserName(false);
+    setCartItemsLength(cart.cartItems.length);
     return () => {};
-  }, [userInCookie]);
+  }, [cart]);
+
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    userInfo ? setUserName(userInfo.name) : setUserName("");
+    return () => {};
+  }, [userInfo]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -207,7 +210,7 @@ export default function Navbar() {
               <NextLink href="/profile" passHref>
                 <Link className="link" sx={{ padding: "0 10px" }}>
                   <Typography variant="body1" component="span">
-                    {userInCookie.name}
+                    {userName}
                   </Typography>
                 </Link>
               </NextLink>

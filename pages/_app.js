@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 import { CacheProvider } from '@emotion/react';
@@ -12,10 +12,15 @@ import PageProivder from '../src/PageProvider'
 import { ThemeProvider } from 'next-themes';
 import { GlobalStyles } from '@mui/material';
 import { globalStyles } from '../src/Theme';
+import { persistStore } from 'redux-persist'
+import { PersistGate } from 'redux-persist/integration/react'
+import { Loading } from '../components/imports'
 
 export default function MyApp(props) {
   const { Component, emotionCache =
     clientSideEmotionCache, pageProps } = props;
+
+  let persistor = persistStore(store)
 
   return (
     <ThemeProvider>
@@ -26,10 +31,12 @@ export default function MyApp(props) {
         </Head>
         <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
           <Provider store={store}>
-            <PageProivder>
-              <GlobalStyles styles={globalStyles} />
-              <Component {...pageProps} />
-            </PageProivder>
+            <PersistGate loading={<Loading />} persistor={persistor}>
+              <PageProivder>
+                <GlobalStyles styles={globalStyles} />
+                <Component {...pageProps} />
+              </PageProivder>
+            </PersistGate>
           </Provider>
         </SnackbarProvider>
       </CacheProvider>
