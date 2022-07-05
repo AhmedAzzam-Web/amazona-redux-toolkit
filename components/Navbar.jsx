@@ -22,6 +22,8 @@ import { useTheme } from "next-themes";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { removeUser } from "../utils/features/userSlice/userController";
+import { removeCart } from "../utils/features/cartSlice/cartController";
+import { removeShippingData } from "../utils/features/shippingSlice/shippingController";
 
 const Search = styled("div")(({ theme }) => ({
   display: "flex",
@@ -162,14 +164,14 @@ export default function Navbar() {
     setAnchorElUser(null);
     if (redirect) {
       router.push(redirect);
-    } else {
-      setAnchorElUser(null);
     }
   };
 
   const logoutHandler = () => {
     setAnchorElUser(null);
     dispatch(removeUser());
+    dispatch(removeCart());
+    dispatch(removeShippingData());
     router.push("/");
   };
 

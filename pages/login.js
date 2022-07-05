@@ -24,16 +24,17 @@ const validationSchema = yup.object({
 
 const Login = () => {
   const { enqueueSnackbar } = useSnackbar()
-  const router = useRouter()
+  const router = useRouter();
+  const { redirect } = router.query;
   const { userData } = useSelector(store => store.user)
   const dispatch = useDispatch()
 
   useEffect(() => {
     if (userData) {
-      router.push('/')
+      router.push(redirect || '/')
     }
     return () => { }
-  }, [router, userData]);
+  }, [router, userData, redirect]);
 
   const formik = useFormik({
     initialValues: {
@@ -45,7 +46,7 @@ const Login = () => {
       try {
         const { data } = await axios.post('/api/users/login', { email, password });
         dispatch(addUser(data))
-        router.push('/')
+        router.push(redirect || '/')
       } catch (err) {
         enqueueSnackbar(getError(err), { variant: 'error' })
       }
@@ -99,7 +100,7 @@ const Login = () => {
             <Grid xs={12} item>
               <Typography variant="subtitle1" gutterBottom component="h3">
                 Do not have an account?
-                <NextLink href='/register' passHref>
+                <NextLink href={`/register?redirect=${redirect || '/'}`} passHref>
                   <Link className='linkWithColor' sx={{ padding: '0 6px' }}>Register</Link>
                 </NextLink>
               </Typography>

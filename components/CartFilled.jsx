@@ -25,8 +25,10 @@ import {
 } from "../utils/features/cartSlice/cartController";
 import { useSnackbar } from "notistack";
 import axios from "axios";
+import { useRouter } from 'next/router';
 
 const CartFilled = () => {
+  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
 
@@ -160,7 +162,11 @@ const CartFilled = () => {
               </Typography>
             </ListItem>
             <ListItem>
-              <Button fullWidth variant="contained">
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={() => router.push("/shipping")}
+              >
                 CheckOut
               </Button>
             </ListItem>

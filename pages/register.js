@@ -35,14 +35,15 @@ const Register = () => {
   const { userData } = useSelector(store => store.user)
   const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
+  const { redirect } = router.query;
   const dispatch = useDispatch()
 
   useEffect(() => {
     if (userData) {
-      router.push('/')
+      router.push(redirect || '/')
     }
     return () => { }
-  }, [router, userData]);
+  }, [router, userData, redirect]);
 
   const formik = useFormik({
     initialValues: {
@@ -60,7 +61,7 @@ const Register = () => {
       try {
         const { data } = await axios.post('/api/users/register', { name, email, password });
         dispatch(addUser(data))
-        router.push('/')
+        router.push(redirect || '/')
       } catch (err) {
         enqueueSnackbar(getError(err), { variant: 'error' })
       }
@@ -73,7 +74,7 @@ const Register = () => {
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography variant="h1" component="div" gutterBottom>
+              <Typography variant="h1" component="h1" gutterBottom>
                 Register
               </Typography>
             </Grid>
@@ -141,7 +142,7 @@ const Register = () => {
             <Grid xs={12} item>
               <Typography variant="subtitle1" gutterBottom component="h3">
                 Already have an account?
-                <NextLink href='/login' passHref>
+                <NextLink href={`/login?redirect=${redirect || '/'}`} passHref>
                   <Link className='linkWithColor' sx={{ padding: '0 6px' }}>Login</Link>
                 </NextLink>
               </Typography>
