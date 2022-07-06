@@ -56,15 +56,16 @@ const Shipping = () => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       dispatch(fillShippingData(values))
+      router.push('/payment')
     },
   });
 
   return (
     <Layout title='Shipping Address' description="The fastest shipping We will arrive in 30 minutes">
-      <CheckoutWizard activeStep={1}></CheckoutWizard>
+      <CheckoutWizard activeStep={2}></CheckoutWizard>
 
-      <form onSubmit={formik.handleSubmit}>
-        <Grid container spacing={2} sx={{ padding: { md: '0 4rem' } }}>
+      <form onSubmit={formik.handleSubmit} className='form'>
+        <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="h1" component="h1" gutterBottom align='center'>
               Shipping Address

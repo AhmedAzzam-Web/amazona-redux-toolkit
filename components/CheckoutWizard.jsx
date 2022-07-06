@@ -7,7 +7,7 @@ const CheckoutWizard = ({ activeStep = 0 }) => {
   return (
     <Stepper
       activeStep={activeStep}
-      sx={{ margin: { md: "2rem 5rem 3rem", xs: "2rem 0 3rem" } }}
+      sx={{ margin: { md: "1rem 5rem 2rem", xs: "2rem 0 3rem" } }}
     >
       {steps.map((step) => (
         <Step key={step}>
@@ -18,4 +18,4 @@ const CheckoutWizard = ({ activeStep = 0 }) => {
   );
 };
 
-export default CheckoutWizard;
+export default React.memo(CheckoutWizard);
