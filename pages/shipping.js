@@ -33,6 +33,8 @@ const Shipping = () => {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const { userData } = useSelector(store => store.user)
+  const { shippingData } = useSelector(store => store.shipping)
+  const { paymentMethod } = useSelector(store => store.payment)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -41,8 +43,19 @@ const Shipping = () => {
       enqueueSnackbar('You need to sign in first', { variant: 'info' })
       return;
     }
+
+    if (shippingData && paymentMethod) {
+      router.push('/placeorder')
+      return;
+    }
+
+    if (shippingData) {
+      router.push('/payment')
+      return;
+    }
+
     return () => { }
-  }, [userData, router, enqueueSnackbar])
+  }, [userData, router, enqueueSnackbar, shippingData])
 
 
   const formik = useFormik({

@@ -34,13 +34,6 @@ const CartFilled = () => {
 
   const { cartItems } = useSelector((store) => store.cart);
 
-  const [hydratedCartItems, setHydratedCartItems] = useState([]);
-
-  useEffect(() => {
-    setHydratedCartItems(cartItems);
-    return () => {};
-  }, [cartItems]);
-
   const updateCart = async (item, quantity) => {
     const { data } = await axios.get(`/api/products/${item._id}`);
 
@@ -83,7 +76,7 @@ const CartFilled = () => {
             </TableHead>
 
             <TableBody>
-              {hydratedCartItems.map((product) => (
+              {cartItems.map((product) => (
                 <TableRow key={product._id}>
                   <TableCell>
                     <NextLink href={`/products/${product.slug}`} passHref>
@@ -153,9 +146,9 @@ const CartFilled = () => {
             <ListItem>
               <Typography variant="h2" component="div">
                 Subtotal (
-                {hydratedCartItems.reduce((a, c) => a + c.quantity, 0)}) items :
+                {cartItems.reduce((a, c) => a + c.quantity, 0)}) items :
                 $
-                {hydratedCartItems.reduce(
+                {cartItems.reduce(
                   (a, c) => a + c.quantity * c.price,
                   0
                 )}

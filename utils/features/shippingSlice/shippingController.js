@@ -1,13 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  shippingData: {
-    name: '',
-    city: '',
-    address: '',
-    postal: '',
-    country: '',
-  },
+  shippingData: null
 }
 
 export const shippingSlice = createSlice({

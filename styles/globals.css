@@ -38,3 +38,7 @@ label {
   max-width: 800px;
   margin: 0 auto;
 }
+
+.card {
+  margin-top: 10px;
+}

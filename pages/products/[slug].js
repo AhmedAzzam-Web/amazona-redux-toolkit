@@ -16,10 +16,10 @@ const ProductDetails = ({ product }) => {
   const { name, description, price, image, rating, reviews, category, brand } = product;
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
-  const { cart } = useSelector(store => store.cart)
+  const { cartItems } = useSelector(store => store.cart)
 
   const addToCart = async () => {
-    let cartItem = cart.cartItems.find(item => item._id === product._id)
+    let cartItem = cartItems.find(item => item._id === product._id)
     let quantity = cartItem ? cartItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/${product._id}`)
 
