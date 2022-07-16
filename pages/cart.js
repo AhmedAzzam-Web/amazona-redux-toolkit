@@ -6,12 +6,6 @@ import dynamic from 'next/dynamic';
 
 const Cart = () => {
   const { cartItems } = useSelector(store => store.cart);
-  const [hydratedCartItems, setHydratedCartItems] = useState([]);
-
-  useEffect(() => {
-    setHydratedCartItems(cartItems);
-    return () => { };
-  }, [cartItems]);
 
   return (
     <Layout title='shopping cart'>
@@ -20,7 +14,7 @@ const Cart = () => {
       </Typography>
 
       {
-        hydratedCartItems.length === 0 ? <CartEmpty /> : <CartFilled />
+        cartItems.length === 0 ? <CartEmpty /> : <CartFilled />
       }
 
     </Layout>

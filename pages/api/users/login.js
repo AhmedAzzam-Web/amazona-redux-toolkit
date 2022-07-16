@@ -1,6 +1,7 @@
 import nc from 'next-connect';
 import bcrypt from 'bcryptjs';
 import { client } from '../../../utils/client';
+import { getError } from '../../../utils/error';
 import { signToken } from '../../../utils/auth';
 
 const handler = nc();
@@ -27,7 +28,7 @@ handler.post(async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    enqueueSnackbar(error.message, { variant: 'error' })
+    enqueueSnackbar(getError(error), { variant: 'error' })
   }
 });
 

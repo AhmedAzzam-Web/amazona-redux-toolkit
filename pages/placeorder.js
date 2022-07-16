@@ -9,6 +9,7 @@ import { useSnackbar } from 'notistack'
 import { getError } from '../utils/error'
 import axios from 'axios'
 import { clearCart } from '../utils/features/cartSlice/cartController'
+import { makeOrder } from '../utils/features/orderSlice/order'
 import dynamic from 'next/dynamic'
 
 const Placeorder = () => {
@@ -20,7 +21,6 @@ const Placeorder = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar();
-
 
   const itemsPrice = cartItems.reduce((a, c) => a + c.price * c.quantity, 0)
 
@@ -55,9 +55,9 @@ const Placeorder = () => {
           authorization: `Bearer ${userData.token}`
         }
       })
-
+      setLoading(true)
+      dispatch(makeOrder({ cartItems, shippingData, paymentMethod, itemsPrice, shippingPrice, taxPrice, totalPrice }))
       dispatch(clearCart())
-      setLoading(false)
       router.push(`/order/${data}`)
     } catch (error) {
       setLoading(false)
