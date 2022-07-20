@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  orderDetails: null,
+  orders: [],
 }
 
 export const paymentSlice = createSlice({
@@ -9,7 +9,7 @@ export const paymentSlice = createSlice({
   initialState,
   reducers: {
     makeOrder: (state, { payload }) => {
-      state.orderDetails = payload
+      state.orders = [...state.orders ,payload]
     },
   },
 })

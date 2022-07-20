@@ -48,11 +48,6 @@ export default {
       type: 'shippingData',
     },
     {
-      title: 'Payment Result',
-      name: 'paymentResult',
-      type: 'paymentResult',
-    },
-    {
       title: 'Order Items',
       name: 'orderItems',
       type: 'array',

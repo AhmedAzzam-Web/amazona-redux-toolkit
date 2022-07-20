@@ -5,7 +5,6 @@ import user from './user'
 import order from './order'
 import orderItems from './orderItems'
 import shippingData from './shippingData'
-import paymentResult from './paymentResult'
 
 export default createSchema({
   name: 'default',
@@ -15,6 +14,5 @@ export default createSchema({
     order,
     orderItems,
     shippingData,
-    paymentResult,
   ]),
 })

@@ -14,11 +14,11 @@ const Order = ({ params }) => {
   const { id: orderId } = params;
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const { orderDetails } = useSelector((store) => store.order)
+  const { orders } = useSelector((store) => store.order)
   const { userData } = useSelector((store) => store.user)
   const { enqueueSnackbar } = useSnackbar();
 
-  const { shippingData, cartItems, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice } = orderDetails;
+  const { shippingData, cartItems, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice } = orders[orders.length - 1];
 
   useEffect(() => {
     if (!userData) {
