@@ -20,12 +20,14 @@ import { useRouter } from "next/router";
 const ProductItem = ({ product }) => {
   const router = useRouter();
   const { name, slug, description, price, image, rating, reviews } = product;
-  const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const { cartItems } = useSelector((store) => store.cart);
 
   const addToCart = async () => {
-    let cartItem = cartItems && cartItems.find((item) => item._id === product._id);
+    closeSnackbar();
+    let cartItem =
+      cartItems && cartItems.find((item) => item._id === product._id);
     let quantity = cartItem ? cartItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/${product._id}`);
 

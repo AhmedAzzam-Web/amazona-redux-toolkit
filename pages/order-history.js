@@ -19,6 +19,7 @@ const OrderHistory = () => {
   useEffect(() => {
     if (!userData) {
       router.push('/login')
+      return;
     }
     const fetchOrders = async () => {
       try {
@@ -28,13 +29,14 @@ const OrderHistory = () => {
         })
         setOrders(data)
         setLoading(false)
+        return data
       } catch (error) {
         enqueueSnackbar(getError(error), { variant: 'error' })
       }
     }
     fetchOrders()
     return () => { }
-  }, [userData.token, router])
+  }, [userData, router])
 
   return (
     <Layout title='order history' description='find your orders history'>

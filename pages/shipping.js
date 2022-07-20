@@ -21,7 +21,7 @@ const validationSchema = yup.object({
     .string('Enter your city')
     .required('City is required'),
   postal: yup
-    .string()
+    .string('Enter your postal code')
     .required('Postal code is required')
     .matches(/(^\d{5}$)|(^\d{5}-\d{4}$)/),
   country: yup

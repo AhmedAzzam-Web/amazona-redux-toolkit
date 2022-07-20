@@ -23,7 +23,7 @@ const validationSchema = yup.object({
 });
 
 const Login = () => {
-  const { enqueueSnackbar } = useSnackbar()
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const router = useRouter();
   const { redirect } = router.query;
   const { userData } = useSelector(store => store.user)
@@ -43,6 +43,7 @@ const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async ({ email, password }) => {
+      closeSnackbar()
       try {
         const { data } = await axios.post('/api/users/login', { email, password });
         dispatch(addUser(data))

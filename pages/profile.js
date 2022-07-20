@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react'
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
-import { Layout } from '../components/imports'
-import NextLink from 'next/link'
 import { useSnackbar } from 'notistack';
-import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import { useSelector, useDispatch } from 'react-redux';
-import { addUser } from '../utils/features/userSlice/userController';
+import { Layout } from '../components/imports';
+import * as yup from 'yup';
+import { useFormik } from 'formik';
+import { Box, Button, Grid, TextField, Typography } from '@mui/material';
+import dynamic from 'next/dynamic';
 import { getError } from '../utils/error';
+import { addUser } from '../utils/features/userSlice/userController';
+import axios from 'axios';
 
 const validationSchema = yup.object({
   name: yup
@@ -20,7 +20,8 @@ const validationSchema = yup.object({
   email: yup
     .string('Enter your email')
     .email('Enter a valid email')
-    .required('Email is required'),
+    .required('Email is required')
+    .matches(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/),
   password: yup
     .string('Enter your password')
     .min(8, 'Password should be of minimum 8 characters length')
@@ -31,24 +32,25 @@ const validationSchema = yup.object({
     .oneOf([yup.ref('password'), null], 'Your password do not match')
 });
 
-const Register = () => {
+const Profile = () => {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { userData } = useSelector(store => store.user)
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const router = useRouter()
-  const { redirect } = router.query;
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (userData) {
-      router.push(redirect || '/')
+    if (!userData) {
+      router.push('/login')
+      return;
     }
+
     return () => { }
-  }, [router, userData, redirect]);
+  }, [router, userData])
 
   const formik = useFormik({
     initialValues: {
-      name: '',
-      email: '',
+      name: userData.name,
+      email: userData.email,
       password: '',
       confirmPassword: '',
     },
@@ -60,21 +62,25 @@ const Register = () => {
         return;
       }
       try {
-        const { data } = await axios.post('/api/users/register', { name, email, password });
+        const { data } = await axios.put('/api/users/profile', { name, email, password },
+          { headers: { authorization: `Bearer ${userData.token}` } }
+        );
         dispatch(addUser(data))
-        router.push(redirect || '/')
+        enqueueSnackbar('Profile updated successfully', { variant: 'success' })
       } catch (err) {
         enqueueSnackbar(getError(err), { variant: 'error' })
+        console.log(err)
       }
     },
   });
 
   return (
-    <Layout title='register' description='register to get fun'>
+    <Layout title='Profile'>
       <Box sx={{ margin: { xs: 'none', lg: '0 10%' } }}>
         <Typography variant="h1" component="h1" gutterBottom align="center">
-          Register
+          Profile
         </Typography>
+
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -133,23 +139,14 @@ const Register = () => {
 
             <Grid xs={12} item>
               <Button color="primary" variant="contained" fullWidth type="submit">
-                Register
+                Update
               </Button>
-            </Grid>
-
-            <Grid xs={12} item>
-              <Typography variant="subtitle1" gutterBottom component="h3">
-                Already have an account?
-                <NextLink href={`/login?redirect=${redirect || '/'}`} passHref>
-                  <Link className='linkWithColor' sx={{ padding: '0 6px' }}>Login</Link>
-                </NextLink>
-              </Typography>
             </Grid>
           </Grid>
         </form>
       </Box>
     </Layout>
-  );
+  )
 }
 
-export default Register
+export default dynamic(() => Promise.resolve(Profile), { ssr: false })
