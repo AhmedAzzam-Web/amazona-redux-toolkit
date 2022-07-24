@@ -82,7 +82,7 @@ const ProductItem = ({ product }) => {
         <Typography variant="body1" component="h3">
           ${price}
         </Typography>
-        <Button size="large" color="primary" onClick={addToCart}>
+        <Button size="large" color="primary" onClick={addToCart} sx={{marginLeft: 'auto'}}>
           Add to cart
         </Button>
       </CardActions>

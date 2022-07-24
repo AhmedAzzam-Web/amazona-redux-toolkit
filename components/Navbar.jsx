@@ -17,6 +17,11 @@ import {
   Box,
   Badge,
   Button,
+  List,
+  ListItem,
+  Drawer,
+  ListItemText,
+  Divider,
 } from "@mui/material";
 import { useTheme } from "next-themes";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,6 +30,10 @@ import { removeUser } from "../utils/features/userSlice/userController";
 import { clearCart } from "../utils/features/cartSlice/cartController";
 import { removeShippingData } from "../utils/features/shippingSlice/shippingController";
 import { removePaymentMethod } from "../utils/features/paymentSlice/paymentController";
+import { useSnackbar } from "notistack";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { getError } from "../utils/error";
+import axios from "axios";
 
 const Search = styled("div")(({ theme }) => ({
   display: "flex",
@@ -128,8 +137,9 @@ const SunOrMoon = styled(Switch)(({ theme }) => ({
 const userPages = ["Profile", "Order History"];
 
 export default function Navbar() {
-  const router = useRouter();
   const dispatch = useDispatch();
+  const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { cartItems } = useSelector((store) => store.cart);
   const { userData } = useSelector((store) => store.user);
@@ -177,6 +187,78 @@ export default function Navbar() {
     router.push("/");
   };
 
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await axios.get(`/api/products/categories`);
+        setCategories(data);
+      } catch (err) {
+        enqueueSnackbar(getError(err), { variant: "error" });
+      }
+    };
+    fetchCategories();
+  }, [enqueueSnackbar]);
+
+  const [sidebar, setSidebar] = useState(false);
+
+  const toggleDrawer = (state) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+
+    setSidebar(state);
+  };
+
+  const [query, setQuery] = useState(null);
+
+  const queryChangeHandler = (e) => {
+    setQuery(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    router.push(`/search?searchQuery=${query}`);
+  };
+
+  const list = () => (
+    <Box
+      role="presentation"
+      onClick={toggleDrawer(false)}
+      onKeyDown={toggleDrawer(false)}
+    >
+      <List>
+        <ListItem>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography>Shopping by category</Typography>
+            <IconButton aria-label="close" onClick={toggleDrawer(false)}>
+              <CancelIcon />
+            </IconButton>
+          </Box>
+        </ListItem>
+        <Divider light />
+        {categories.map((category) => (
+          <NextLink
+            key={category}
+            href={`/search?category=${category}`}
+            passHref
+          >
+            <ListItem button component={"a"} onClick={toggleDrawer(false)}>
+              <ListItemText primary={category}></ListItemText>
+            </ListItem>
+          </NextLink>
+        ))}
+      </List>
+    </Box>
+  );
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" className={styles.appbar}>
@@ -187,6 +269,7 @@ export default function Navbar() {
               edge="start"
               color="inherit"
               aria-label="open drawer"
+              onClick={toggleDrawer(true)}
             >
               <MenuIcon />
             </IconButton>
@@ -206,16 +289,22 @@ export default function Navbar() {
             </NextLink>
           </Box>
 
-          <Search sx={{ display: { xs: "none", md: "flex" } }}>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-            />
-          </Search>
+          <Drawer anchor="left" open={sidebar} onClose={toggleDrawer(false)}>
+            {list()}
+          </Drawer>
 
+          <form onSubmit={handleSubmit}>
+            <Search sx={{ display: { xs: "none", md: "flex" } }}>
+              <SearchIconWrapper onClick={handleSubmit}>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search Products"
+                inputProps={{ "aria-label": "search" }}
+                onChange={queryChangeHandler}
+              />
+            </Search>
+          </form>
           <Box alignItems="center" justifyContent="center">
             <SunOrMoon
               key={isDark}
