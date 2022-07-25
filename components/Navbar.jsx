@@ -23,7 +23,6 @@ import {
   ListItemText,
   Divider,
 } from "@mui/material";
-import { useTheme } from "next-themes";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { removeUser } from "../utils/features/userSlice/userController";
@@ -34,6 +33,7 @@ import { useSnackbar } from "notistack";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { getError } from "../utils/error";
 import axios from "axios";
+import { toggleDarkMode } from "../utils/features/darkSlice/dark";
 
 const Search = styled("div")(({ theme }) => ({
   display: "flex",
@@ -143,16 +143,9 @@ export default function Navbar() {
 
   const { cartItems } = useSelector((store) => store.cart);
   const { userData } = useSelector((store) => store.user);
+  const { isDark } = useSelector((store) => store.dark);
 
-  const { resolvedTheme, setTheme } = useTheme();
-
-  const [isDark, setIsDark] = useState(true);
   const [cartItemsLength, setCartItemsLength] = useState();
-
-  useEffect(() => {
-    resolvedTheme === "light" ? setIsDark(false) : setIsDark(true);
-    return () => {};
-  }, [resolvedTheme]);
 
   useEffect(() => {
     cartItems && setCartItemsLength(cartItems.length);
@@ -307,11 +300,8 @@ export default function Navbar() {
           </form>
           <Box alignItems="center" justifyContent="center">
             <SunOrMoon
-              key={isDark}
               checked={isDark}
-              onChange={() =>
-                setTheme(resolvedTheme === "light" ? "dark" : "light")
-              }
+              onChange={() => dispatch(toggleDarkMode())}
             />
             <NextLink href="/cart" passHref>
               <Link className="link" sx={{ padding: "0 10px" }}>

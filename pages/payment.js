@@ -14,7 +14,6 @@ const Payment = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [paymentMethod, setPaymentMethod] = React.useState('');
   const { shippingData } = useSelector(store => store.shipping);
-  const { paymentMethod: savedPaymentMethod } = useSelector(store => store.payment);
 
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
@@ -24,11 +23,6 @@ const Payment = () => {
     if (!shippingData) {
       router.push('/shipping')
       enqueueSnackbar('Please fill in your shipping data first', { variant: 'error' })
-      return;
-    }
-
-    if (savedPaymentMethod) {
-      router.push('/placeorder')
       return;
     }
 

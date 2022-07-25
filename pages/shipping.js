@@ -34,23 +34,12 @@ const Shipping = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { userData } = useSelector(store => store.user)
   const { shippingData } = useSelector(store => store.shipping)
-  const { paymentMethod } = useSelector(store => store.payment)
   const dispatch = useDispatch()
 
   useEffect(() => {
     if (!userData) {
       router.push('/login?redirect=/shipping')
       enqueueSnackbar('You need to sign in first', { variant: 'info' })
-      return;
-    }
-
-    if (shippingData && paymentMethod) {
-      router.push('/placeorder')
-      return;
-    }
-
-    if (shippingData) {
-      router.push('/payment')
       return;
     }
 

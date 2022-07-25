@@ -4,6 +4,7 @@ import userReudcer from './features/userSlice/userController'
 import shippingReudcer from './features/shippingSlice/shippingController'
 import paymentReudcer from './features/paymentSlice/paymentController'
 import orderReudcer from './features/orderSlice/order'
+import darkReudcer from './features/darkSlice/dark'
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'reduxjs-toolkit-persist';
 import autoMergeLevel2 from 'reduxjs-toolkit-persist/lib/stateReconciler/autoMergeLevel2';
@@ -37,6 +38,7 @@ const reducers = combineReducers({
   shipping: shippingReudcer,
   payment: paymentReudcer,
   order: orderReudcer,
+  dark: darkReudcer,
 });
 
 const _persistedReducer = persistReducer(persistConfig, reducers);

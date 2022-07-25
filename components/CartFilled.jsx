@@ -25,16 +25,17 @@ import {
 } from "../utils/features/cartSlice/cartController";
 import { useSnackbar } from "notistack";
 import axios from "axios";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 const CartFilled = () => {
   const router = useRouter();
-  const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const dispatch = useDispatch();
 
   const { cartItems } = useSelector((store) => store.cart);
 
   const updateCart = async (item, quantity) => {
+    closeSnackbar();
     const { data } = await axios.get(`/api/products/${item._id}`);
 
     if (data.countInStock < quantity) {
@@ -145,13 +146,8 @@ const CartFilled = () => {
           <List>
             <ListItem>
               <Typography variant="h2" component="div">
-                Subtotal (
-                {cartItems.reduce((a, c) => a + c.quantity, 0)}) items :
-                $
-                {cartItems.reduce(
-                  (a, c) => a + c.quantity * c.price,
-                  0
-                )}
+                Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)}) items
+                : ${cartItems.reduce((a, c) => a + c.quantity * c.price, 0)}
               </Typography>
             </ListItem>
             <ListItem>
