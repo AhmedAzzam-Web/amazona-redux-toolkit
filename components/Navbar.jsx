@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
+import styles from "../styles/Navbar.module.css";
 import { styled, alpha } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import styles from "../styles/Navbar.module.css";
-import NextLink from "next/link";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import LoginIcon from "@mui/icons-material/Login";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import MoreIcon from "@mui/icons-material/MoreVert";
 import {
   AppBar,
   MenuItem,
@@ -24,6 +28,7 @@ import {
   Divider,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { removeUser } from "../utils/features/userSlice/userController";
 import { clearCart } from "../utils/features/cartSlice/cartController";
@@ -136,7 +141,7 @@ const SunOrMoon = styled(Switch)(({ theme }) => ({
 
 const userPages = ["Profile", "Order History"];
 
-export default function Navbar() {
+export default function PrimarySearchAppBar() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
@@ -145,7 +150,7 @@ export default function Navbar() {
   const { userData } = useSelector((store) => store.user);
   const { isDark } = useSelector((store) => store.dark);
 
-  const [cartItemsLength, setCartItemsLength] = useState();
+  const [cartItemsLength, setCartItemsLength] = useState(0);
 
   useEffect(() => {
     cartItems && setCartItemsLength(cartItems.length);
@@ -159,20 +164,9 @@ export default function Navbar() {
     return () => {};
   }, [userData]);
 
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-  const handleCloseUserMenu = (redirect) => {
-    setAnchorElUser(null);
-    if (redirect) {
-      router.push(redirect);
-    }
-  };
-
   const logoutHandler = () => {
-    setAnchorElUser(null);
+    setAnchorEl(null);
+    setMobileMoreAnchorEl(null);
     dispatch(removeUser());
     dispatch(clearCart());
     dispatch(removeShippingData());
@@ -214,7 +208,7 @@ export default function Navbar() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    router.push(`/search?searchQuery=${query}`);
+    query && router.push(`/search?searchQuery=${query}`);
   };
 
   const list = () => (
@@ -225,11 +219,7 @@ export default function Navbar() {
     >
       <List>
         <ListItem>
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-          >
+          <Box className="flexbox">
             <Typography>Shopping by category</Typography>
             <IconButton aria-label="close" onClick={toggleDrawer(false)}>
               <CancelIcon />
@@ -252,6 +242,144 @@ export default function Navbar() {
     </Box>
   );
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+
+  const handleMobileMenuOpen = (event) => {
+    setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const menuId = "primary-search-account-menu";
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      {userPages.map((page) => (
+        <MenuItem
+          key={page}
+          onClick={() => {
+            handleMenuClose();
+            router.push(
+              `/${page.toLowerCase().split("").join("").replace(" ", "-")}`
+            );
+          }}
+        >
+          {page}
+        </MenuItem>
+      ))}
+      <MenuItem onClick={logoutHandler}>
+        <Typography textAlign="center">Logout</Typography>
+      </MenuItem>
+    </Menu>
+  );
+
+  const mobileMenuId = "primary-search-account-menu-mobile";
+  const renderMobileMenu = (
+    <Menu
+      anchorEl={mobileMoreAnchorEl}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      id={mobileMenuId}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={isMobileMenuOpen}
+      onClose={handleMobileMenuClose}
+    >
+      <NextLink href="/cart" passHref>
+        <MenuItem sx={{ padding: "0 20px" }}>
+          <IconButton
+            size="large"
+            aria-label="show cart products"
+            color="inherit"
+          >
+            <Badge badgeContent={cartItemsLength} color="error">
+              <ShoppingCartIcon />
+            </Badge>
+          </IconButton>
+          <p>Cart</p>
+        </MenuItem>
+      </NextLink>
+
+      {/* replace the badge below with liked products love icon in the figma desgin */}
+
+      {/* <MenuItem>
+        <IconButton
+          size="large"
+          aria-label="show 17 new notifications"
+          color="inherit"
+        >
+          <Badge badgeContent={17} color="error">
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
+        <p>Notifications</p>
+      </MenuItem> */}
+
+      {userName ? (
+        <MenuItem onClick={handleProfileMenuOpen}>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="primary-search-account-menu"
+            aria-haspopup="true"
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
+          <p>Profile</p>
+        </MenuItem>
+      ) : (
+        <NextLink href="/login" passHref>
+          <MenuItem sx={{ padding: "0 20px" }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="primary-search-account-menu"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <LoginIcon />
+            </IconButton>
+            <p>Login</p>
+          </MenuItem>
+        </NextLink>
+      )}
+    </Menu>
+  );
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" className={styles.appbar}>
@@ -266,14 +394,12 @@ export default function Navbar() {
             >
               <MenuIcon />
             </IconButton>
-
             <NextLink href="/">
               <Link className="link">
                 <Typography
                   variant="h6"
                   noWrap
                   component="h3"
-                  sx={{ display: { xs: "none", sm: "block" } }}
                   className={styles.brand}
                 >
                   amazona
@@ -287,7 +413,7 @@ export default function Navbar() {
           </Drawer>
 
           <form onSubmit={handleSubmit}>
-            <Search sx={{ display: { xs: "none", md: "flex" } }}>
+            <Search sx={{ display: { xs: "none", sm: "flex" } }}>
               <SearchIconWrapper onClick={handleSubmit}>
                 <SearchIcon />
               </SearchIconWrapper>
@@ -298,67 +424,51 @@ export default function Navbar() {
               />
             </Search>
           </form>
-          <Box alignItems="center" justifyContent="center">
+          <Box
+            sx={{ display: { xs: "none", md: "flex" } }}
+            alignItems="center"
+            justifyContent="center"
+          >
             <SunOrMoon
               checked={isDark}
               onChange={() => dispatch(toggleDarkMode())}
             />
             <NextLink href="/cart" passHref>
-              <Link className="link" sx={{ padding: "0 10px" }}>
-                <Typography variant="body1" component="span">
-                  <Badge color="secondary" badgeContent={cartItemsLength}>
-                    Cart
-                  </Badge>
-                </Typography>
-              </Link>
+              <IconButton
+                size="large"
+                aria-label="show cart products"
+                color="inherit"
+              >
+                <Badge badgeContent={cartItemsLength} color="error">
+                  <ShoppingCartIcon />
+                </Badge>
+              </IconButton>
             </NextLink>
 
+            {/* replace the badge below with liked products love icon in the figma desgin  */}
+
+            {/* <IconButton
+              size="large"
+              aria-label="show 17 new notifications"
+              color="inherit"
+            >
+              <Badge badgeContent={17} color="error">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton> */}
+
             {userName ? (
-              <>
-                <Button
-                  aria-controls="user-menu"
-                  aria-haspopup="true"
-                  className={styles.navbarButton}
-                  onClick={handleOpenUserMenu}
-                >
-                  {userName}
-                </Button>
-                <Menu
-                  id="user-menu"
-                  anchorEl={anchorElUser}
-                  keepMounted
-                  open={Boolean(anchorElUser)}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  onClose={handleCloseUserMenu}
-                >
-                  {userPages.map((page) => (
-                    <MenuItem
-                      key={page}
-                      onClick={() =>
-                        handleCloseUserMenu(
-                          `/${page
-                            .toLowerCase()
-                            .split("")
-                            .join("")
-                            .replace(" ", "-")}`
-                        )
-                      }
-                    >
-                      <Typography textAlign="center">{page}</Typography>
-                    </MenuItem>
-                  ))}
-                  <MenuItem onClick={logoutHandler}>
-                    <Typography textAlign="center">Logout</Typography>
-                  </MenuItem>
-                </Menu>
-              </>
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="current user details profile, orders"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
             ) : (
               <NextLink href="/login" passHref>
                 <Link className="link" sx={{ padding: "0 10px" }}>
@@ -369,8 +479,22 @@ export default function Navbar() {
               </NextLink>
             )}
           </Box>
+          <Box sx={{ display: { xs: "flex", md: "none" } }}>
+            <IconButton
+              size="large"
+              aria-label="show more"
+              aria-controls={mobileMenuId}
+              aria-haspopup="true"
+              onClick={handleMobileMenuOpen}
+              color="inherit"
+            >
+              <MoreIcon />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
+      {renderMobileMenu}
+      {renderMenu}
     </Box>
   );
 }
