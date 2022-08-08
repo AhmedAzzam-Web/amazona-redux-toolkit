@@ -8,25 +8,34 @@ import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 const Layout = ({ title, description, children }) => {
   const { isDark } = useSelector((store) => store.dark);
   const theme = createTheme({
+    components: {
+      MuiLink: {
+        defaultProps: {
+          underline: 'none',
+        },
+      },
+    },
     typography: {
       h1: {
         fontSize: "1.6rem",
         fontWeight: 400,
         margin: "1rem 0",
+        lineHeight: "106%",
       },
-      h2: {
+      h3: {
         fontSize: "1.4rem",
         fontWeight: 400,
         margin: "1rem 0",
+        lineHeight: "61px",
       },
     },
     palette: {
       mode: isDark ? "dark" : "light",
       primary: {
-        main: "#f0c000",
+        main: "#BED479",
       },
       secondary: {
-        main: "#208080",
+        main: "#0B0B0D",
       },
     },
   });

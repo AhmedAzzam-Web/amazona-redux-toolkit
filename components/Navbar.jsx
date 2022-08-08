@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { Sidebar } from "./imports";
+import logo from "../public/logo.svg";
 import styles from "../styles/Navbar.module.css";
-import { styled, alpha } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LoginIcon from "@mui/icons-material/Login";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import {
-  AppBar,
   MenuItem,
-  InputBase,
   Link,
   Switch,
   Menu,
@@ -21,76 +21,22 @@ import {
   Box,
   Badge,
   Button,
+  Drawer,
+  Tabs,
+  Tab,
   List,
   ListItem,
-  Drawer,
   ListItemText,
-  Divider,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import NextLink from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { removeUser } from "../utils/features/userSlice/userController";
 import { clearCart } from "../utils/features/cartSlice/cartController";
 import { removeShippingData } from "../utils/features/shippingSlice/shippingController";
 import { removePaymentMethod } from "../utils/features/paymentSlice/paymentController";
-import { useSnackbar } from "notistack";
-import CancelIcon from "@mui/icons-material/Cancel";
-import { getError } from "../utils/error";
-import axios from "axios";
 import { toggleDarkMode } from "../utils/features/darkSlice/dark";
-
-const Search = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha("#ffffff", 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: theme.spacing(2),
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  color: "rgba(0, 0, 0, 0.54)",
-  padding: theme.spacing(1 + "1px", 2),
-  height: "100%",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  order: "1",
-  cursor: "pointer",
-  backgroundColor: theme.palette.primary.main,
-  borderRadius: "0px 4px 4px 0px",
-  transition: "0.3s",
-  "&:hover": {
-    backgroundColor: "rgba(0, 0, 0, 0.04)",
-  },
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: theme.spacing(1),
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    display: "flex",
-    flexGrow: 1,
-    [theme.breakpoints.up("sm")]: {
-      width: "20ch",
-    },
-    [theme.breakpoints.up("md")]: {
-      width: "35ch",
-    },
-  },
-}));
 
 const SunOrMoon = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -139,12 +85,12 @@ const SunOrMoon = styled(Switch)(({ theme }) => ({
   },
 }));
 
-const userPages = ["Profile", "Order History"];
+const userPages = ["profile", "order history"];
+const navLinks = ["home", "shop", "about", "contact"];
 
 export default function PrimarySearchAppBar() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { enqueueSnackbar } = useSnackbar();
 
   const { cartItems } = useSelector((store) => store.cart);
   const { userData } = useSelector((store) => store.user);
@@ -174,19 +120,6 @@ export default function PrimarySearchAppBar() {
     router.push("/");
   };
 
-  const [categories, setCategories] = useState([]);
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const { data } = await axios.get(`/api/products/categories`);
-        setCategories(data);
-      } catch (err) {
-        enqueueSnackbar(getError(err), { variant: "error" });
-      }
-    };
-    fetchCategories();
-  }, [enqueueSnackbar]);
-
   const [sidebar, setSidebar] = useState(false);
 
   const toggleDrawer = (state) => (event) => {
@@ -200,50 +133,10 @@ export default function PrimarySearchAppBar() {
     setSidebar(state);
   };
 
-  const [query, setQuery] = useState(null);
+  const [landingPage, setLandingPage] = useState("home");
 
-  const queryChangeHandler = (e) => {
-    setQuery(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    query && router.push(`/search?searchQuery=${query}`);
-  };
-
-  const list = () => (
-    <Box
-      role="presentation"
-      onClick={toggleDrawer(false)}
-      onKeyDown={toggleDrawer(false)}
-    >
-      <List>
-        <ListItem>
-          <Box className="flexbox">
-            <Typography>Shopping by category</Typography>
-            <IconButton aria-label="close" onClick={toggleDrawer(false)}>
-              <CancelIcon />
-            </IconButton>
-          </Box>
-        </ListItem>
-        <Divider light />
-        {categories.map((category) => (
-          <NextLink
-            key={category}
-            href={`/search?category=${category}`}
-            passHref
-          >
-            <ListItem button component={"a"} onClick={toggleDrawer(false)}>
-              <ListItemText primary={category}></ListItemText>
-            </ListItem>
-          </NextLink>
-        ))}
-      </List>
-    </Box>
-  );
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -287,9 +180,7 @@ export default function PrimarySearchAppBar() {
           key={page}
           onClick={() => {
             handleMenuClose();
-            router.push(
-              `/${page.toLowerCase().split("").join("").replace(" ", "-")}`
-            );
+            router.push(`/${page.split("").join("").replace(" ", "-")}`);
           }}
         >
           {page}
@@ -325,28 +216,26 @@ export default function PrimarySearchAppBar() {
             aria-label="show cart products"
             color="inherit"
           >
-            <Badge badgeContent={cartItemsLength} color="error">
-              <ShoppingCartIcon />
+            <Badge badgeContent={cartItemsLength} color="primary">
+              <ShoppingCartOutlinedIcon />
             </Badge>
           </IconButton>
           <p>Cart</p>
         </MenuItem>
       </NextLink>
 
-      {/* replace the badge below with liked products love icon in the figma desgin */}
-
-      {/* <MenuItem>
+      <MenuItem>
         <IconButton
           size="large"
-          aria-label="show 17 new notifications"
+          aria-label="show loved prodcuts"
           color="inherit"
         >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
+          <Badge badgeContent={17} color="primary">
+            <FavoriteBorderOutlinedIcon />
           </Badge>
         </IconButton>
-        <p>Notifications</p>
-      </MenuItem> */}
+        <p>Loved Products</p>
+      </MenuItem>
 
       {userName ? (
         <MenuItem onClick={handleProfileMenuOpen}>
@@ -381,81 +270,114 @@ export default function PrimarySearchAppBar() {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" className={styles.appbar}>
-        <Toolbar className="flexbox">
-          <Box className="flexbox">
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer(true)}
-            >
-              <MenuIcon />
-            </IconButton>
-            <NextLink href="/">
-              <Link className="link">
+    <Box sx={{ flexGrow: 1, margin: "0.3rem 0" }}>
+      <Toolbar className="flexbox">
+        <Box className="flexbox">
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={toggleDrawer(true)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <NextLink href="/">
+            <Link className="link">
+              <Box className="flexbox">
+                <Image src={logo} alt="e-commerce" height="30px" />
                 <Typography
                   variant="h6"
                   noWrap
-                  component="h3"
+                  component="h4"
                   className={styles.brand}
                 >
-                  amazona
+                  Plantly.
                 </Typography>
-              </Link>
-            </NextLink>
+              </Box>
+            </Link>
+          </NextLink>
+        </Box>
+
+        <Drawer anchor="left" open={sidebar} onClose={toggleDrawer(false)}>
+          <Sidebar values={{ sidebar, setSidebar, toggleDrawer }} />
+        </Drawer>
+
+        {/* Links here */}
+        <Box sx={{ display: { xs: "none", md: "flex" } }}>
+          <nav aria-label="Navigation Links">
+            <List className={styles.navigationLinks}>
+              {navLinks.map((link) => (
+                <NextLink
+                  key={link}
+                  href={`${link === "Home" ? "/" : `/${link}`}`}
+                  passHref
+                >
+                  <ListItem button component={"a"} className={styles.navLink}>
+                    <ListItemText primary={link}></ListItemText>
+                  </ListItem>
+                </NextLink>
+              ))}
+            </List>
+          </nav>
+        </Box>
+
+        <Box display="flex" alignItems="center" justifyContent="center">
+          <SunOrMoon
+            checked={isDark}
+            onChange={() => dispatch(toggleDarkMode())}
+          />
+
+          <IconButton
+            size="large"
+            aria-label="search products"
+            color="inherit"
+            onClick={toggleDrawer(true)}
+          >
+            <SearchIcon />
+          </IconButton>
+
+          <Box
+            sx={{
+              display: { xs: "flex", md: "none" },
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <IconButton
+              size="large"
+              aria-label="show more"
+              aria-controls={mobileMenuId}
+              aria-haspopup="true"
+              onClick={handleMobileMenuOpen}
+              color="inherit"
+            >
+              <MoreIcon />
+            </IconButton>
           </Box>
 
-          <Drawer anchor="left" open={sidebar} onClose={toggleDrawer(false)}>
-            {list()}
-          </Drawer>
-
-          <form onSubmit={handleSubmit}>
-            <Search sx={{ display: { xs: "none", sm: "flex" } }}>
-              <SearchIconWrapper onClick={handleSubmit}>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search Products"
-                inputProps={{ "aria-label": "search" }}
-                onChange={queryChangeHandler}
-              />
-            </Search>
-          </form>
-          <Box
-            sx={{ display: { xs: "none", md: "flex" } }}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <SunOrMoon
-              checked={isDark}
-              onChange={() => dispatch(toggleDarkMode())}
-            />
+          <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <NextLink href="/cart" passHref>
               <IconButton
                 size="large"
                 aria-label="show cart products"
                 color="inherit"
               >
-                <Badge badgeContent={cartItemsLength} color="error">
-                  <ShoppingCartIcon />
+                <Badge badgeContent={cartItemsLength} color="primary">
+                  <ShoppingCartOutlinedIcon />
                 </Badge>
               </IconButton>
             </NextLink>
 
-            {/* replace the badge below with liked products love icon in the figma desgin  */}
-
-            {/* <IconButton
+            <IconButton
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
             >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
+              <Badge badgeContent={17} color="primary">
+                <FavoriteBorderOutlinedIcon />
               </Badge>
-            </IconButton> */}
+            </IconButton>
 
             {userName ? (
               <IconButton
@@ -479,20 +401,8 @@ export default function PrimarySearchAppBar() {
               </NextLink>
             )}
           </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
+        </Box>
+      </Toolbar>
       {renderMobileMenu}
       {renderMenu}
     </Box>

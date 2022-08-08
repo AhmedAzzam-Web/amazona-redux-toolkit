@@ -104,7 +104,7 @@ const OrderHistory = () => {
                       <TableCell>
                         <Typography
                           variant="subtitle1"
-                          component="h3"
+                          component="h4"
                         >
                           {orderCreatedTime}
                         </Typography>
@@ -113,14 +113,14 @@ const OrderHistory = () => {
                       <TableCell>
                         <Typography
                           variant="subtitle1"
-                          component="h3"
+                          component="h4"
                         >
                           ${order.totalPrice}
                         </Typography>
                       </TableCell>
 
                       <TableCell>
-                        <Typography variant="subtitle1" component="h3">
+                        <Typography variant="subtitle1" component="h4">
                           {order.isPaid ? `Paid at ${paidTime}` : 'not paid'}
                         </Typography>
                       </TableCell>

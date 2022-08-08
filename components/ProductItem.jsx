@@ -79,7 +79,7 @@ const ProductItem = ({ product }) => {
       </NextLink>
 
       <CardActions sx={{ paddingLeft: "20px", paddingTop: "0px" }}>
-        <Typography variant="body1" component="h3">
+        <Typography variant="body1" component="h4">
           ${price}
         </Typography>
         <Button size="large" color="primary" onClick={addToCart} sx={{marginLeft: 'auto'}}>

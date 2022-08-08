@@ -135,7 +135,7 @@ const Placeorder = () => {
                           <Typography
                             variant="body1"
                             color="primary"
-                            component="h3"
+                            component="h4"
                             sx={{ cursor: "pointer" }}
                           >
                             {product.name}
@@ -146,14 +146,14 @@ const Placeorder = () => {
                       <TableCell>
                         <Typography
                           variant="body1"
-                          component="h3"
+                          component="h4"
                         >
                           {product.quantity}
                         </Typography>
                       </TableCell>
 
                       <TableCell>
-                        <Typography variant="body1" component="h3">
+                        <Typography variant="body1" component="h4">
                           ${product.price}
                         </Typography>
                       </TableCell>

@@ -1,26 +1,14 @@
+:root {
+  --primary-color: #bed479;
+}
 html,
 body {
   padding: 0;
   margin: 0;
   font-family: Roboto, sans-serif;
 }
-.link {
-  color: inherit;
-  text-decoration: none;
-  cursor: pointer;
-}
-.linkWithColor {
-  text-decoration: none;
-  cursor: pointer;
-}
 * {
   box-sizing: border-box;
-}
-th,
-td,
-svg,
-label {
-  color: inherit !important;
 }
 .main {
   margin-top: 1.3rem;
@@ -32,13 +20,17 @@ label {
   align-items: center;
   justify-content: space-between;
 }
-
 .form {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
 }
-
 .card {
   margin-top: 10px;
+}
+.bg-white {
+  background-color: #f6f7f2;
+}
+.bg-green {
+  background-color: #ebeee3;
 }

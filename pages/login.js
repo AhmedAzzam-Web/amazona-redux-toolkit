@@ -99,7 +99,7 @@ const Login = () => {
             </Grid>
 
             <Grid xs={12} item>
-              <Typography variant="subtitle1" gutterBottom component="h3">
+              <Typography variant="subtitle1" gutterBottom component="h4">
                 Do not have an account?
                 <NextLink href={`/register?redirect=${redirect || '/'}`} passHref>
                   <Link className='linkWithColor' sx={{ padding: '0 6px' }}>Register</Link>

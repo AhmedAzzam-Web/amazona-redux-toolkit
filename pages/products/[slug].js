@@ -96,7 +96,7 @@ const ProductDetails = ({ product }) => {
           </Grid>
 
           <Grid item md={3} xs={12}>
-            <Card sx={{ backgroundColor: 'inherit', color: 'inherit' }}>
+            <Card>
               <List>
                 <ListItem>
                   <Grid container>

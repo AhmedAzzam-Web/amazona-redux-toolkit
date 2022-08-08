@@ -138,7 +138,7 @@ const Register = () => {
             </Grid>
 
             <Grid xs={12} item>
-              <Typography variant="subtitle1" gutterBottom component="h3">
+              <Typography variant="subtitle1" gutterBottom component="h4">
                 Already have an account?
                 <NextLink href={`/login?redirect=${redirect || '/'}`} passHref>
                   <Link className='linkWithColor' sx={{ padding: '0 6px' }}>Login</Link>

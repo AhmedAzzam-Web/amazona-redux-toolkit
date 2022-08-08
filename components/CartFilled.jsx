@@ -97,7 +97,7 @@ const CartFilled = () => {
                       <Typography
                         variant="body1"
                         color="primary"
-                        component="h3"
+                        component="h4"
                         sx={{ cursor: "pointer" }}
                       >
                         {product.name}
@@ -120,7 +120,7 @@ const CartFilled = () => {
                   </TableCell>
 
                   <TableCell>
-                    <Typography variant="body1" component="h3">
+                    <Typography variant="body1" component="h4">
                       ${product.price}
                     </Typography>
                   </TableCell>
@@ -145,7 +145,7 @@ const CartFilled = () => {
         <Card sx={{ color: "inherit", backgroundColor: "inherit" }}>
           <List>
             <ListItem>
-              <Typography variant="h2" component="div">
+              <Typography variant="h5" component="h4">
                 Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)}) items
                 : ${cartItems.reduce((a, c) => a + c.quantity * c.price, 0)}
               </Typography>
