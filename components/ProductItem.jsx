@@ -54,7 +54,7 @@ const ProductItem = ({ product }) => {
   };
 
   return (
-    <Card sx={{ backgroundColor: "inherit", color: "inherit" }}>
+    <Card>
       <NextLink href={`/products/${slug.current}`} passHref>
         <CardActionArea>
           <CardMedia
@@ -64,12 +64,12 @@ const ProductItem = ({ product }) => {
             title={name}
             alt={name}
           />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
+          <CardContent sx={{mt: '-20px', padding: '16px 0 0 14px'}}>
+            <Typography gutterBottom variant="h5" component="h3">
               {name}
             </Typography>
 
-            <Typography gutterBottom variant="body2">
+            <Typography gutterBottom variant="body1" sx={{mt: '-6px'}}>
               {description} ({reviews} reviews)
             </Typography>
 
@@ -78,7 +78,7 @@ const ProductItem = ({ product }) => {
         </CardActionArea>
       </NextLink>
 
-      <CardActions sx={{ paddingLeft: "20px", paddingTop: "0px" }}>
+      <CardActions sx={{ paddingLeft: "20px" }}>
         <Typography variant="body1" component="h4">
           ${price}
         </Typography>

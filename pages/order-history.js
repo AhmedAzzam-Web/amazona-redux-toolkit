@@ -40,7 +40,7 @@ const OrderHistory = () => {
 
   return (
     <Layout title='order history' description='find your orders history'>
-      <Typography variant="h1" component="h1">
+      <Typography variant="h3" component="h1">
         Order History
       </Typography>
 

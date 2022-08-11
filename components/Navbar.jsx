@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Sidebar } from "./imports";
 import logo from "../public/logo.svg";
 import styles from "../styles/Navbar.module.css";
-import { styled } from "@mui/material/styles";
+import { styled, alpha } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
+import CancelIcon from "@mui/icons-material/Cancel";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LoginIcon from "@mui/icons-material/Login";
@@ -22,11 +22,11 @@ import {
   Badge,
   Button,
   Drawer,
-  Tabs,
-  Tab,
   List,
   ListItem,
   ListItemText,
+  InputBase,
+  Divider,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import NextLink from "next/link";
@@ -37,6 +37,63 @@ import { clearCart } from "../utils/features/cartSlice/cartController";
 import { removeShippingData } from "../utils/features/shippingSlice/shippingController";
 import { removePaymentMethod } from "../utils/features/paymentSlice/paymentController";
 import { toggleDarkMode } from "../utils/features/darkSlice/dark";
+import { getError } from "../utils/error";
+import axios from "axios";
+import { useSnackbar } from "notistack";
+
+const Search = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha("#e1dfdf", 0.25),
+  "&:hover": {
+    backgroundColor: alpha("#e1dfdf", 0.2),
+  },
+  marginRight: theme.spacing(2),
+  marginLeft: theme.spacing(2),
+  width: "100%",
+  [theme.breakpoints.down("sm")]: {
+    width: "auto",
+  },
+  [theme.breakpoints.up("sm")]: {
+    width: "auto",
+  },
+}));
+
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  color: "rgba(0, 0, 0, 0.54)",
+  padding: theme.spacing(1 + "1px", 2),
+  height: "100%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  order: "1",
+  cursor: "pointer",
+  backgroundColor: theme.palette.primary.main,
+  borderRadius: "0px 4px 4px 0px",
+  transition: "0.3s",
+  "&:hover": {
+    backgroundColor: "rgba(200 239 78 / 85%)",
+  },
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 1),
+    transition: theme.transitions.create("width"),
+    display: "flex",
+    flexGrow: 1,
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      width: "15ch",
+    },
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
+    },
+  },
+}));
 
 const SunOrMoon = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -95,7 +152,7 @@ export default function PrimarySearchAppBar() {
   const { cartItems } = useSelector((store) => store.cart);
   const { userData } = useSelector((store) => store.user);
   const { isDark } = useSelector((store) => store.dark);
-
+  const { enqueueSnackbar } = useSnackbar();
   const [cartItemsLength, setCartItemsLength] = useState(0);
 
   useEffect(() => {
@@ -120,6 +177,19 @@ export default function PrimarySearchAppBar() {
     router.push("/");
   };
 
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await axios.get(`/api/products/categories`);
+        setCategories(data);
+      } catch (err) {
+        enqueueSnackbar(getError(err), { variant: "error" });
+      }
+    };
+    fetchCategories();
+  }, []);
+
   const [sidebar, setSidebar] = useState(false);
 
   const toggleDrawer = (state) => (event) => {
@@ -133,7 +203,100 @@ export default function PrimarySearchAppBar() {
     setSidebar(state);
   };
 
-  const [landingPage, setLandingPage] = useState("home");
+  const [query, setQuery] = useState(null);
+  const queryChangeHandler = (e) => {
+    setQuery(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    query && router.push(`/search?searchQuery=${query}`);
+  };
+
+  const sidebarComponent = () => (
+    <Box
+      role="presentation"
+      sx={{ minWidth: { sm: "270px" }, paddingTop: "0", paddingBottom: "0" }}
+    >
+      <List>
+        <ListItem
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography variant="h5" component="h3">
+            Search Products
+          </Typography>
+          <IconButton
+            aria-label="close"
+            onClick={toggleDrawer(false)}
+            sx={{ display: "flex", alignItems: "center", order: "0" }}
+          >
+            <CancelIcon />
+          </IconButton>
+        </ListItem>
+
+        <form onSubmit={handleSubmit}>
+          <Search>
+            <SearchIconWrapper onClick={handleSubmit}>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search Products"
+              inputProps={{ "aria-label": "search" }}
+              onChange={queryChangeHandler}
+            />
+          </Search>
+        </form>
+
+        <Divider light sx={{ margin: "2rem 0 0.2rem" }} />
+
+        <ListItem
+          sx={{ justifyContent: "center", paddingTop: "0", paddingBottom: 0 }}
+        >
+          <Typography variant="h5" component="h4" sx={{margin: '0.7rem 0'}}>
+            Links
+          </Typography>
+        </ListItem>
+        <Divider light />
+        {navLinks.map((link) => (
+          <NextLink
+            key={link}
+            href={`${link === "home" ? "/" : `/${link.toLowerCase()}`}`}
+            passHref
+          >
+            <ListItem button component={"a"} onClick={toggleDrawer(false)}>
+              <ListItemText primary={link} className="link"></ListItemText>
+            </ListItem>
+          </NextLink>
+        ))}
+
+        <Divider />
+
+        <ListItem
+          sx={{ justifyContent: "center", paddingTop: "0", paddingBottom: 0 }}
+        >
+          <Typography variant="h5" component="h4" sx={{margin: '0.7rem 0'}}>
+            Shopping by category
+          </Typography>
+        </ListItem>
+        <Divider light />
+        {categories.map((category) => (
+          <NextLink
+            key={category}
+            href={`/search?category=${category.toLowerCase()}`}
+            passHref
+          >
+            <ListItem button component={"a"} onClick={toggleDrawer(false)}>
+              <ListItemText primary={category}></ListItemText>
+            </ListItem>
+          </NextLink>
+        ))}
+      </List>
+    </Box>
+  );
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
@@ -270,7 +433,7 @@ export default function PrimarySearchAppBar() {
   );
 
   return (
-    <Box sx={{ flexGrow: 1, margin: "0.3rem 0" }}>
+    <Box sx={{ flexGrow: 1 }}>
       <Toolbar className="flexbox">
         <Box className="flexbox">
           <IconButton
@@ -300,17 +463,16 @@ export default function PrimarySearchAppBar() {
         </Box>
 
         <Drawer anchor="left" open={sidebar} onClose={toggleDrawer(false)}>
-          <Sidebar values={{ sidebar, setSidebar, toggleDrawer }} />
+          {sidebarComponent()}
         </Drawer>
 
-        {/* Links here */}
         <Box sx={{ display: { xs: "none", md: "flex" } }}>
           <nav aria-label="Navigation Links">
             <List className={styles.navigationLinks}>
               {navLinks.map((link) => (
                 <NextLink
                   key={link}
-                  href={`${link === "Home" ? "/" : `/${link}`}`}
+                  href={`${link === "home" ? "/" : `/${link}`}`}
                   passHref
                 >
                   <ListItem button component={"a"} className={styles.navLink}>

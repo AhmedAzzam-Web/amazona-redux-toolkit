@@ -9,7 +9,7 @@ const Cart = () => {
 
   return (
     <Layout title='shopping cart'>
-      <Typography variant="h1" gutterBottom component="h1">
+      <Typography variant="h3" gutterBottom component="h1">
         Shopping Cart
       </Typography>
 

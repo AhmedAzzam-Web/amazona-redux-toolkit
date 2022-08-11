@@ -4,10 +4,10 @@ import { Box, Link, Typography } from "@mui/material";
 const CartEmpty = () => {
   return (
     <Box>
-      <Typography variant="h1" gutterBottom component="h1">
+      <Typography variant="h5" gutterBottom component="h1">
         Yout cart is empty
         <NextLink href="/" passHref>
-          <Link>Go Shopping</Link>
+          <Link sx={{marginLeft: '4px'}}>Go Shopping</Link>
         </NextLink>
       </Typography>
     </Box>

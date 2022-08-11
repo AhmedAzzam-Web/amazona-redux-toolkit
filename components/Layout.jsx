@@ -17,16 +17,36 @@ const Layout = ({ title, description, children }) => {
     },
     typography: {
       h1: {
-        fontSize: "1.6rem",
-        fontWeight: 400,
+        fontSize: "4rem",
+        fontWeight: 600,
         margin: "1rem 0",
         lineHeight: "106%",
       },
+      h2: {
+        fontSize: "3.2rem",
+        fontWeight: 500,
+        margin: "1rem 0",
+        lineHeight: "50%",
+      },
       h3: {
+        fontSize: "2.6rem",
+        fontWeight: 400,
+        margin: "1rem 0",
+      },
+      h4: {
+        fontSize: "1.9rem",
+        fontWeight: 400,
+        margin: "1rem 0",
+      },
+      h5: {
         fontSize: "1.4rem",
         fontWeight: 400,
         margin: "1rem 0",
-        lineHeight: "61px",
+      },
+      h6: {
+        fontSize: "0.8rem",
+        fontWeight: 400,
+        margin: "1rem 0",
       },
     },
     palette: {

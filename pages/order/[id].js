@@ -47,7 +47,7 @@ const Order = ({ params }) => {
 
   return (
     <Layout title={`Order ${orderId}`}>
-      <Typography variant="h1" component="h1">
+      <Typography variant="h3" component="h1">
         Order {orderId}
       </Typography>
 
@@ -57,7 +57,7 @@ const Order = ({ params }) => {
             <Grid item xs={12} md={9}>
               <Card className='card'>
                 <CardContent>
-                  <Typography variant="h2" component="h2">
+                  <Typography variant="h5" component="h2">
                     Shipping Address
                   </Typography>
                   <Typography variant="body1">
@@ -68,7 +68,7 @@ const Order = ({ params }) => {
 
               <Card className="card">
                 <CardContent>
-                  <Typography variant="h2" component="h2">
+                  <Typography variant="h5" component="h2">
                     Payment Method
                   </Typography>
                   <Typography variant="body1">
@@ -79,7 +79,7 @@ const Order = ({ params }) => {
 
               <Card className="card">
                 <CardContent>
-                  <Typography variant="h2" component="h2">
+                  <Typography variant="h5" component="h2">
                     Order Items
                   </Typography>
 
@@ -151,7 +151,7 @@ const Order = ({ params }) => {
             <Grid item xs={12} md={3}>
               <Card className="card">
                 <CardContent>
-                  <Typography variant="h2" component="h2">
+                  <Typography variant="h5" component="h2">
                     Order Summary
                   </Typography>
 

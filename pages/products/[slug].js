@@ -63,7 +63,7 @@ const ProductDetails = ({ product }) => {
           <Grid item sm={6} md={3} xs={12}>
             <List>
               <ListItem>
-                <Typography variant="h1" component="h1">
+                <Typography variant="h4" component="h1" sx={{m: '0', lineHeight: '20px'}}>
                   {name}
                 </Typography>
               </ListItem>
