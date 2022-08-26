@@ -1,5 +1,7 @@
 export { default as Layout } from './Layout.jsx'
 export { default as Navbar } from './Navbar.jsx'
+export { default as Logo } from './Logo.jsx'
+export { default as Header } from './Header.jsx'
 export { default as Products } from './Products.jsx'
 export { default as ProductItem } from './ProductItem.jsx'
 export { default as CartEmpty } from './CartEmpty.jsx'

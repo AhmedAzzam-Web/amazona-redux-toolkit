@@ -1,6 +1,6 @@
 import React from "react";
 import Head from "next/head";
-import { Navbar, Footer } from "./imports.js";
+import { Header, Footer } from "./imports.js";
 import Container from "@mui/material/Container";
 import { useSelector } from "react-redux";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
@@ -11,7 +11,7 @@ const Layout = ({ title, description, children }) => {
     components: {
       MuiLink: {
         defaultProps: {
-          underline: 'none',
+          underline: "none",
         },
       },
     },
@@ -52,7 +52,7 @@ const Layout = ({ title, description, children }) => {
     palette: {
       mode: isDark ? "dark" : "light",
       primary: {
-        main: "#BED479",
+        main: "#66CC66",
       },
       secondary: {
         main: "#0B0B0D",
@@ -69,9 +69,9 @@ const Layout = ({ title, description, children }) => {
 
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Navbar />
+        <Header />
 
-        <Container component="main" className="main">
+        <Container maxWidth="xl" component="main">
           {children}
         </Container>
 

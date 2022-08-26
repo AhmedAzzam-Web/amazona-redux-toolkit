@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #bed479;
+  --primary-color: #66cc66;
 }
 html,
 body {
@@ -9,10 +9,6 @@ body {
 }
 * {
   box-sizing: border-box;
-}
-.main {
-  min-height: 80vh;
-  overflow: hidden;
 }
 .flexbox {
   display: flex;
@@ -26,12 +22,6 @@ body {
 }
 .card {
   margin-top: 10px;
-}
-.bg-white {
-  background-color: #f6f7f2;
-}
-.bg-green {
-  background-color: #ebeee3;
 }
 .link {
   text-transform: capitalize;

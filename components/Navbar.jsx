@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import logo from "../public/logo.svg";
-import styles from "../styles/Navbar.module.css";
+import { Logo } from "./imports.js";
+import styles from "../styles/Header.module.css";
 import { styled, alpha } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import CancelIcon from "@mui/icons-material/Cancel";
-import AccountCircle from "@mui/icons-material/AccountCircle";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LoginIcon from "@mui/icons-material/Login";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
@@ -203,7 +204,7 @@ export default function PrimarySearchAppBar() {
     setSidebar(state);
   };
 
-  const [query, setQuery] = useState(null);
+  const [query, setQuery] = useState("");
   const queryChangeHandler = (e) => {
     setQuery(e.target.value);
   };
@@ -218,7 +219,7 @@ export default function PrimarySearchAppBar() {
       role="presentation"
       sx={{ minWidth: { sm: "270px" }, paddingTop: "0", paddingBottom: "0" }}
     >
-      <List>
+      <List sx={{ padding: "0" }}>
         <ListItem
           sx={{
             display: "flex",
@@ -246,6 +247,7 @@ export default function PrimarySearchAppBar() {
             <StyledInputBase
               placeholder="Search Products"
               inputProps={{ "aria-label": "search" }}
+              value={query}
               onChange={queryChangeHandler}
             />
           </Search>
@@ -256,7 +258,7 @@ export default function PrimarySearchAppBar() {
         <ListItem
           sx={{ justifyContent: "center", paddingTop: "0", paddingBottom: 0 }}
         >
-          <Typography variant="h5" component="h4" sx={{margin: '0.7rem 0'}}>
+          <Typography variant="h5" component="h4" sx={{ margin: "0.7rem 0" }}>
             Links
           </Typography>
         </ListItem>
@@ -278,7 +280,7 @@ export default function PrimarySearchAppBar() {
         <ListItem
           sx={{ justifyContent: "center", paddingTop: "0", paddingBottom: 0 }}
         >
-          <Typography variant="h5" component="h4" sx={{margin: '0.7rem 0'}}>
+          <Typography variant="h5" component="h4" sx={{ margin: "0.7rem 0" }}>
             Shopping by category
           </Typography>
         </ListItem>
@@ -409,7 +411,7 @@ export default function PrimarySearchAppBar() {
             aria-haspopup="true"
             color="inherit"
           >
-            <AccountCircle />
+            <PersonOutlinedIcon />
           </IconButton>
           <p>Profile</p>
         </MenuItem>
@@ -433,7 +435,7 @@ export default function PrimarySearchAppBar() {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box>
       <Toolbar className="flexbox">
         <Box className="flexbox">
           <IconButton
@@ -449,14 +451,7 @@ export default function PrimarySearchAppBar() {
             <Link className="link">
               <Box className="flexbox">
                 <Image src={logo} alt="e-commerce" height="30px" />
-                <Typography
-                  variant="h6"
-                  noWrap
-                  component="h4"
-                  className={styles.brand}
-                >
-                  Plantly.
-                </Typography>
+                <Logo />
               </Box>
             </Link>
           </NextLink>
@@ -551,7 +546,7 @@ export default function PrimarySearchAppBar() {
                 onClick={handleProfileMenuOpen}
                 color="inherit"
               >
-                <AccountCircle />
+                <PersonOutlinedIcon />
               </IconButton>
             ) : (
               <NextLink href="/login" passHref>
